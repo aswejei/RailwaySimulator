@@ -1,12 +1,10 @@
-import time
+import time, re
 from map import GameMap
 from train import Train
 from os import system
 
 
 def menu(x, train,first_time):
-
-    # s={'a':0,'b':1,'c':2,'d':3,'e':4,'f':5}
     while x.CheckIfOverloaded(train):
         system('cls')
         x.GenerateGoods()
@@ -18,7 +16,7 @@ def menu(x, train,first_time):
             train.PrintNextStationsList()
             stations_state = input('\nКуда поедем?\n')
             while (stations_state not in train.GetNextStationsList()):
-                stations_state = int(input('\nХорошо подyмайте\n'))
+                stations_state = input('\nНекорректный ввод, попробуйте еще раз:\n')
             train.GoToStation(stations_state)
             print('...едем...')
             time.sleep(2)
@@ -35,6 +33,8 @@ def menu(x, train,first_time):
             print('Игра сохранена')
             save(x,train,time.time()-first_time)
             exit()
+        else:
+            print('Некорректный формат ввода, попробуйте еще раз!')
         x.CheckIfOverloaded(train)
 
 
@@ -47,6 +47,7 @@ def save(x, train,time):
             f.write(str(station.Capacity) + '\n')
         f.write(str(train.Capacity) + '\n')
         f.write(str(time))
+
 def continue_game(x, train):
     data=[]
     with open("rec.txt", 'r+') as f:
@@ -64,7 +65,7 @@ def continue_game(x, train):
 def run():
     x = GameMap()
     train = Train(x)
-    flag = int(input('''
+    flag = input('''
 H   ┈╱▔▔▔▔▔▔▔▔╲┈┈┈┈
 E   ╱▔▔▔▔▔▔▔▔╲╱┈┈┈┈
 L   ▏MY TRAIN▕╱▔▔╲┈
@@ -73,8 +74,10 @@ O   ▏1.NEW   ▕ ▕▉▕╱╲
 !   ▇2.CONTINUE▔▔╲ ▕
 !   ▇▇╱▔╲▇▇▇▇▇╱▔╲▕╱
 !   ┈┈╲▂╱┈┈┈┈┈╲▂╱
-       \n '''))
-    if flag == 2:
+       \n ''')
+    while flag not in ['1','2']:
+        flag = input('Некорректный ввод, попробуйте еще раз:\n')
+    if flag == '2':
         my_time=continue_game(x, train)
     else:
         my_time=0

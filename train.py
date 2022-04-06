@@ -12,29 +12,25 @@ class Train:
     def LoadTrain(self):
         print('На станции:', self.__currentStation.capacity)
         print('В поезде:', self.__capacity)
-        amount = int(input('Сколько загрузить: '))
-        while amount < 0 or self.__currentStation.capacity - amount < 0:
-            print('На станции:', self.__currentStation.capacity)
-            print('В поезде', self.__capacity)
-            amount = int(input('Сколько загрузить: '))
-        if self.__capacity + amount <= self.__size:
-            self.__capacity += amount
-            self.__currentStation.capacity -= amount
+        amount = input('Сколько загрузить: ')
+        while amount not in [f'{s}' for s in range(1, self.__currentStation.capacity + 1)]:
+            amount=input('Некорректный ввод, попробуйте еще раз:\n')
+        if self.__capacity + int(amount) <= self.__size:
+            self.__capacity += int(amount)
+            self.__currentStation.capacity -= int(amount)
         else:
             buf = self.__size - self.__capacity
             self.__capacity = self.__size
-            self.__currentStation.capacity += -buf + amount
+            self.__currentStation.capacity += -buf + int(amount)
 
     def UnloadTrain(self):
         print('На станции:', self.__currentStation.capacity)
         print('В поезде:', self.__capacity)
-        amount = int(input('Сколько выгрузить '))
-        while amount < 0 or self.__capacity - amount < 0:
-            print('На станции:', self.__currentStation.capacity)
-            print('в поезде сейчас столько груза:', self.__capacity)
-            amount = int(input('В поезде: '))
-        self.__capacity -= amount
-        self.__currentStation.capacity += amount
+        amount = input('Сколько выгрузить: ')
+        while amount not in [f'{s}' for s in range(1, self.__capacity + 1)]:
+            amount=input('Некорректный ввод, попробуйте еще раз:\n')
+        self.__capacity -= int(amount)
+        self.__currentStation.capacity += int(amount)
 
     def PrintNextStationsList(self):
         for station in self.__gameMap.StationsGraph[self.__currentStation.name].values():
@@ -42,10 +38,6 @@ class Train:
 
     def GetNextStationsList(self):
         return self.__gameMap.StationsGraph[self.__currentStation.name]
-
-    @property
-    def follow_stations(self):
-        return len(self.__gameMap.StationsGraph[self.__currentStation])
 
     @property
     def CurrentStation(self):
